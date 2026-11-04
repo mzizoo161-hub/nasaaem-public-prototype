@@ -44,10 +44,22 @@ def _pool(connection_string):
 
 def get_prototype_connection():
     """Returns a context manager yielding a pooled psycopg connection."""
+    from contextlib import contextmanager
+    from psycopg_pool import PoolTimeout
     import psycopg
-    return psycopg.connect(
-        _secret_url(),
-        sslmode="require",
-        connect_timeout=10,
-        prepare_threshold=None,
-    )
+
+    @contextmanager
+    def connection():
+        try:
+            with _pool(_secret_url()).connection(timeout=2) as conn:
+                yield conn
+        except PoolTimeout:
+            with psycopg.connect(
+                _secret_url(),
+                sslmode="require",
+                connect_timeout=10,
+                prepare_threshold=None,
+            ) as conn:
+                yield conn
+
+    return connection()

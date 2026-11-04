@@ -269,6 +269,15 @@ can_use_dashboard = (
 user_identity = f"USER-{user['id']}"
 
 
+
+@st.cache_data(ttl=8, show_spinner=False)
+def cached_unread_count(user_id):
+    return backend["get_unread_count"](user_id)
+
+@st.cache_data(ttl=8, show_spinner=False)
+def cached_notifications(user_id):
+    return backend["get_user_notifications"](user_id)
+
 # =====================================================
 # 5. HEADER + NOTIFICATIONS
 # =====================================================
@@ -290,7 +299,7 @@ with notification_column:
 
     try:
 
-        unread_count = backend["get_unread_count"](
+        unread_count = cached_unread_count(
             user["id"]
         )
 
@@ -312,7 +321,7 @@ with notification_column:
 
         try:
 
-            notifications = backend["get_user_notifications"](
+            notifications = cached_notifications(
                 user["id"]
             )
 
@@ -1146,32 +1155,144 @@ elif st.session_state.main_page == "Dashboard":
 
 
 
-# Admin overview — read-only by design; never exposes stored password hashes.
+
+# NASAAEM_ADMIN_525
 elif st.session_state.main_page == "Admin":
     if not is_admin:
-        st.error("Access denied")
+        st.error("Access denied.")
         st.stop()
-    from prototype_cloud import get_prototype_connection
+
+    import csv
+    import io
     from psycopg.rows import dict_row
-    st.subheader("Synthetic Cloud Admin Overview")
-    st.caption("Prototype only. Two-field login is not secure for real employee data.")
+    from prototype_cloud import get_prototype_connection
+
+    st.title("Admin Dashboard")
+    st.caption("Synthetic prototype — all departments and tickets")
+
     with get_prototype_connection() as conn:
-        with conn.cursor(row_factory=dict_row) as cursor:
-            cursor.execute("""SELECT role, COUNT(*) AS total
-                              FROM nasaaem_prototype.users GROUP BY role""")
-            role_counts = {row['role']: row['total'] for row in cursor.fetchall()}
-            cursor.execute("""SELECT department, status, COUNT(*) AS total
-                              FROM nasaaem_prototype.tickets
-                              GROUP BY department, status ORDER BY department, status""")
-            summaries = cursor.fetchall()
-    cols = st.columns(3)
-    for col, role in zip(cols, ('Employee','Staff','Admin')):
-        col.metric(role, role_counts.get(role, 0))
-    st.subheader('Department ticket status')
-    if summaries:
-        st.dataframe(summaries, use_container_width=True, hide_index=True)
+        with conn.cursor(row_factory=dict_row) as cur:
+            # Recheck admin privilege against the database.
+            cur.execute(
+                """SELECT role, is_active
+                   FROM nasaaem_prototype.users
+                   WHERE id = %s""",
+                (user["id"],),
+            )
+            admin_record = cur.fetchone()
+
+            if not admin_record or not admin_record["is_active"] or admin_record["role"] != "Admin":
+                st.error("Admin access denied.")
+                st.stop()
+
+            cur.execute("""
+                SELECT role, COUNT(*) AS total
+                FROM nasaaem_prototype.users
+                GROUP BY role
+            """)
+            roles = {r["role"]: r["total"] for r in cur.fetchall()}
+
+            cur.execute("""
+                SELECT
+                    t.id AS ticket_id,
+                    t.request_id,
+                    COALESCE(u.full_name, r.employee_id) AS requester,
+                    t.description,
+                    t.category,
+                    t.department,
+                    t.location,
+                    t.status,
+                    t.assigned_to,
+                    t.created_at
+                FROM nasaaem_prototype.tickets t
+                JOIN nasaaem_prototype.requests r
+                    ON r.id = t.request_id
+                LEFT JOIN nasaaem_prototype.users u
+                    ON r.employee_id = ('USER-' || u.id::text)
+                ORDER BY t.id DESC
+            """)
+            all_tickets = [dict(r) for r in cur.fetchall()]
+
+    st.subheader("System Overview")
+    a, b, c, d = st.columns(4)
+    a.metric("Employees", roles.get("Employee", 0))
+    b.metric("Staff", roles.get("Staff", 0))
+    c.metric("Admins", roles.get("Admin", 0))
+    d.metric("Total Tickets", len(all_tickets))
+
+    st.subheader("Ticket Overview")
+    x, y, z = st.columns(3)
+    x.metric("New", sum(t["status"] == "New" for t in all_tickets))
+    y.metric("In Progress", sum(t["status"] == "In Progress" for t in all_tickets))
+    z.metric("Resolved", sum(t["status"] == "Resolved" for t in all_tickets))
+
+    departments = sorted({
+        str(t["department"]) for t in all_tickets
+        if t["department"]
+    })
+    statuses = sorted({
+        str(t["status"]) for t in all_tickets
+        if t["status"]
+    })
+
+    chosen_departments = st.multiselect(
+        "Filter by Department", departments
+    )
+    chosen_statuses = st.multiselect(
+        "Filter by Status", statuses
+    )
+
+    visible = [
+        t for t in all_tickets
+        if (not chosen_departments or t["department"] in chosen_departments)
+        and (not chosen_statuses or t["status"] in chosen_statuses)
+    ]
+
+    st.subheader("All Tickets")
+    st.caption(f"Showing {len(visible)} of {len(all_tickets)} tickets")
+
+    if visible:
+        st.dataframe(
+            visible,
+            use_container_width=True,
+            hide_index=True,
+        )
     else:
-        st.info('No tickets yet')
+        st.info("No matching tickets.")
+
+    # CSV includes all tickets, independently of display filters.
+    columns = [
+        "ticket_id", "request_id", "requester",
+        "description", "category", "department",
+        "location", "status", "assigned_to",
+        "created_at",
+    ]
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(columns)
+
+    def safe_csv_value(value):
+        if value is None:
+            return ""
+        s = str(value)
+        if s.lstrip().startswith(("=", "+", "-", "@")):
+            s = "'" + s
+        return s
+
+    for ticket in all_tickets:
+        writer.writerow([
+            safe_csv_value(ticket.get(field))
+            for field in columns
+        ])
+
+    st.download_button(
+        label="Download All Tickets CSV",
+        data=output.getvalue().encode("utf-8-sig"),
+        file_name="nasaaem_all_tickets.csv",
+        mime="text/csv",
+        use_container_width=True,
+    )
 
 # =====================================================
 # 11. FOOTER
