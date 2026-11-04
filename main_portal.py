@@ -542,8 +542,11 @@ if st.session_state.main_page == "Chat":
                         message
                     )
 
-                except Exception:
-
+                except Exception as error:
+                    st.error(
+                        "AI pipeline diagnostic: "
+                        + type(error).__name__
+                    )
                     result = None
 
             if result is None:
