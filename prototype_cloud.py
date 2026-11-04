@@ -44,4 +44,10 @@ def _pool(connection_string):
 
 def get_prototype_connection():
     """Returns a context manager yielding a pooled psycopg connection."""
-    return _pool(_secret_url()).connection()
+    import psycopg
+    return psycopg.connect(
+        _secret_url(),
+        sslmode="require",
+        connect_timeout=10,
+        prepare_threshold=None,
+    )
