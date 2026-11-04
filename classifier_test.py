@@ -15,12 +15,30 @@ from pydantic import (
 # 1. CONFIGURATION
 # =====================================================
 
-MODEL_NAME = "qwen3:8b"
+import os
+import json
+import streamlit as st
 
-client = Client(
-    host="http://127.0.0.1:11434",
-    timeout=180,
-)
+def _ai_setting(name, default=""):
+    value = os.environ.get(name)
+    if not value:
+        value = st.secrets.get(name, default)
+    return str(value)
+
+MODEL_NAME = _ai_setting("OLLAMA_MODEL", "gemma4:31b")
+
+api_key = _ai_setting("OLLAMA_API_KEY")
+if api_key:
+    client = Client(
+        host=_ai_setting("OLLAMA_HOST", "https://ollama.com"),
+        headers={"Authorization": f"Bearer {api_key}"},
+        timeout=180,
+    )
+else:
+    client = Client(
+        host="http://127.0.0.1:11434",
+        timeout=180,
+    )
 
 Department = Literal[
     "IT Support",
@@ -567,23 +585,29 @@ def classify_request(employee_request: str):
             messages=[
                 {
                     "role": "system",
-                    "content": SYSTEM_PROMPT,
+                    "content": SYSTEM_PROMPT
+                    + "\\nReturn ONLY a valid JSON object. "
+                    + "No markdown or explanation. JSON schema: "
+                    + json.dumps(
+                        TicketClassification.model_json_schema(),
+                        ensure_ascii=False,
+                    ),
                 },
                 {
                     "role": "user",
                     "content": employee_request,
                 },
             ],
-            format=TicketClassification.model_json_schema(),
             options={
                 "temperature": 0,
             },
-            think=False,
         )
 
-        result = TicketClassification.model_validate_json(
-            response.message.content
-        )
+        content = response.message.content.strip()
+        if content.startswith("```"):
+            content = content.split("\\n", 1)[-1]
+            content = content.rsplit("```", 1)[0].strip()
+        result = TicketClassification.model_validate_json(content)
 
         # -------------------------------------------------
         # Conservative guard for a single ambiguous
