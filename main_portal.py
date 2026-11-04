@@ -521,6 +521,8 @@ if st.session_state.main_page == "Chat":
         )
 
     if submitted:
+        # AI_DIAGNOSTIC_519
+        st.session_state["ai_error_519"] = "No AI error captured"
 
         message = message.strip()
 
@@ -550,6 +552,7 @@ if st.session_state.main_page == "Chat":
                     result = None
 
             if result is None:
+                st.error("AI diagnostic: " + st.session_state.get("ai_error_519", "Unknown"))
 
                 st.error(
                     "تعذر تحليل الطلب. "

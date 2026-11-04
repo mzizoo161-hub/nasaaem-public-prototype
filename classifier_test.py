@@ -663,6 +663,8 @@ def classify_request(employee_request: str):
         return result
 
     except ValidationError as error:
+        st.session_state["ai_error_519"] = ("JSON_VALIDATION | " + type(error).__name__ + " | HTTP " + str(getattr(error, "status_code", "N/A")))
+
         # AI_DIAGNOSTIC_515
         st.error(
             "AI diagnostic: JSON_VALIDATION | "
@@ -675,6 +677,8 @@ def classify_request(employee_request: str):
         print(error)
 
     except ResponseError as error:
+        st.session_state["ai_error_519"] = ("OLLAMA_API | " + type(error).__name__ + " | HTTP " + str(getattr(error, "status_code", "N/A")))
+
         # AI_DIAGNOSTIC_515
         st.error(
             "AI diagnostic: OLLAMA_API | "
@@ -687,6 +691,8 @@ def classify_request(employee_request: str):
         print(error)
 
     except Exception as error:
+        st.session_state["ai_error_519"] = ("GENERAL_ERROR | " + type(error).__name__ + " | HTTP " + str(getattr(error, "status_code", "N/A")))
+
         # AI_DIAGNOSTIC_515
         st.error(
             "AI diagnostic: GENERAL_ERROR | "
