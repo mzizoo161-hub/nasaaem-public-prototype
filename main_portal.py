@@ -49,6 +49,22 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+
+# NASA AEM MOBILE UI CLEANUP
+st.markdown("""
+<style>
+[data-testid="stToolbar"],
+[data-testid="stDecoration"],
+[data-testid="stHeaderActionElements"],
+[data-testid="stStatusWidget"],
+#MainMenu,
+footer {
+    display: none !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # The hosted application uses persistent PostgreSQL; no SQLite initialization.
 
 if "main_user" not in st.session_state:
