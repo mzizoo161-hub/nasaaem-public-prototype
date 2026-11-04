@@ -1,0 +1,13 @@
+# Never commit credentials or personal data
+.streamlit/secrets.toml
+.streamlit/*.bak
+.env
+*.env
+*.db
+*.db-*
+db/
+*.csv
+*.bak
+*.zip
+__pycache__/
+*.pyc
