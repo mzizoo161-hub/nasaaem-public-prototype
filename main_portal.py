@@ -17,6 +17,7 @@ from helpdesk_backend import get_backend_functions
 from prototype_backend import get_backend_functions as get_prototype_backend
 backend = get_prototype_backend()
 from classifier_test import classify_request
+from demo_router import classify_request_demo
 
 from database import (
     ALLOWED_DEPARTMENTS,
@@ -540,9 +541,7 @@ if st.session_state.main_page == "Chat":
 
                 try:
 
-                    result = classify_request(
-                        message
-                    )
+                    result = classify_request_demo(message)
 
                 except Exception as error:
                     st.error(
