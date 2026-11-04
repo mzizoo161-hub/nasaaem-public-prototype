@@ -663,16 +663,37 @@ def classify_request(employee_request: str):
         return result
 
     except ValidationError as error:
+        # AI_DIAGNOSTIC_515
+        st.error(
+            "AI diagnostic: JSON_VALIDATION | "
+            + type(error).__name__
+            + " | HTTP: "
+            + str(getattr(error, "status_code", "N/A"))
+        )
 
         print("Invalid JSON or schema:")
         print(error)
 
     except ResponseError as error:
+        # AI_DIAGNOSTIC_515
+        st.error(
+            "AI diagnostic: OLLAMA_API | "
+            + type(error).__name__
+            + " | HTTP: "
+            + str(getattr(error, "status_code", "N/A"))
+        )
 
         print("Ollama model error:")
         print(error)
 
     except Exception as error:
+        # AI_DIAGNOSTIC_515
+        st.error(
+            "AI diagnostic: GENERAL_ERROR | "
+            + type(error).__name__
+            + " | HTTP: "
+            + str(getattr(error, "status_code", "N/A"))
+        )
 
         print("Classification error:")
         print(error)
