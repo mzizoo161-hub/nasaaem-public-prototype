@@ -50,6 +50,11 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# NASA AEM HOSPITAL UI THEME 600
+from nasaaem_ui import apply_nasaaem_theme
+apply_nasaaem_theme()
+
+
 
 # NASA AEM MOBILE UI CLEANUP
 st.markdown("""
