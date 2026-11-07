@@ -188,6 +188,16 @@ def apply_nasaaem_theme():
           [data-testid="stMainBlockContainer"] h1 {font-size:1.8rem !important;}
         }
         </style>"""
+    # NASAAEM_HIDE_INPUT_HINTS_623
+    styles += """
+    <style>
+      /* Hide Streamlit's keyboard submission instructions. */
+      [data-testid="InputInstructions"],
+      [data-testid="stInputInstructions"] {
+          display: none !important;
+      }
+    </style>
+    """
     st.markdown(styles, unsafe_allow_html=True)
     if is_login:
         st.markdown(
