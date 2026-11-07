@@ -176,7 +176,7 @@ if st.session_state.main_user is None:
         "and hospital employee ID."
     )
 
-    with st.form("login_form"):
+    with st.form("login_form", enter_to_submit=False):
 
         phone_number = st.text_input(
             "Phone Number",
@@ -517,7 +517,7 @@ st.divider()
 
 if st.session_state.main_page == "Chat":
 
-    with st.form("ai_request_form"):
+    with st.form("ai_request_form", enter_to_submit=False):
 
         message = st.text_area(
             "اكتب المشكلة",
@@ -774,7 +774,7 @@ elif st.session_state.main_page == "My Tickets":
                 if existing_feedback and existing_feedback['rating']:
                     st.caption(f"Requester feedback: {existing_feedback['rating']}/5")
                 if ticket["status"] != "Resolved":
-                    with st.form(f"reply_form_{ticket['id']}", clear_on_submit=True):
+                    with st.form(f"reply_form_{ticket['id']}", clear_on_submit=True, enter_to_submit=False):
                         reply = st.text_area("Reply / add details", max_chars=2000)
                         send = st.form_submit_button("Send message")
                     if send:
@@ -789,7 +789,7 @@ elif st.session_state.main_page == "My Tickets":
                 if ticket["status"] == "Pending Confirmation":
                     st.divider()
                     st.markdown("#### هل تم حل المشكلة؟ / Was your issue solved?")
-                    with st.form(f"confirm_form_{ticket['id']}"):
+                    with st.form(f"confirm_form_{ticket['id']}", enter_to_submit=False):
                         verdict = st.radio("Problem solved?", ["Yes — Solved", "No — Still a problem"])
                         rating = st.select_slider("Service rating", options=[1, 2, 3, 4, 5], value=5)
                         feedback_note = st.text_area("Feedback or what still needs fixing", max_chars=2000)
@@ -1019,7 +1019,7 @@ elif st.session_state.main_page == "Dashboard":
                     except (ValueError, PermissionError, psycopg.Error):
                         st.warning("Conversation not available")
                     if ticket['status'] != 'Resolved':
-                        with st.form(f"staff_reply_{ticket['id']}", clear_on_submit=True):
+                        with st.form(f"staff_reply_{ticket['id']}", clear_on_submit=True, enter_to_submit=False):
                             reply = st.text_area("Reply to requester", max_chars=2000)
                             send = st.form_submit_button("Send reply")
                         if send:

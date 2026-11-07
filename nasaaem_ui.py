@@ -236,6 +236,21 @@ def apply_nasaaem_theme():
     </style>
     """
 
+    # NASAAEM_FIX_626: Preserve full logo and hide any legacy keyboard hints.
+    styles += """<style>
+      .nas-brand-hero { overflow: visible !important; padding: 0 !important; }
+      .nas-brand-hero img {
+        display: block !important;
+        width: min(255px, 67vw) !important;
+        height: auto !important;
+        max-height: none !important;
+        object-fit: contain !important;
+        margin: 0 auto !important;
+      }
+      div[data-testid="InputInstructions"],
+      div[data-testid="InputInstructions"] span,
+      [data-testid="stInputInstructions"] { display:none !important; }
+    </style>"""
     st.markdown(styles, unsafe_allow_html=True)
     if is_login:
         st.markdown(
