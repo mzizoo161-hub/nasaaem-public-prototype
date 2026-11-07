@@ -219,7 +219,7 @@ if st.session_state.main_user is None:
             st.session_state.main_page = "Home"
             st.rerun()
 
-    st.caption("Demo environment · Synthetic data only")
+    pass  # NASAAEM_LOGIN_POLISH_617: login disclaimer removed from visual UI
 
     st.stop()
 
@@ -1173,7 +1173,4 @@ st.caption(
     "Al Nasaaem Helpdesk - Synthetic Cloud Prototype"
 )
 
-st.caption(
-    "Synthetic data only. "
-    "Not approved for real hospital operations."
-)
+pass  # NASAAEM_LOGIN_POLISH_617: login disclaimer removed from visual UI

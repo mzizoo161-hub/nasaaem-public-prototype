@@ -114,6 +114,77 @@ def apply_nasaaem_theme():
           }
         </style>
         """
+    # NASAAEM_LOGIN_POLISH_617 — presentation only, no backend changes.
+    if is_login:
+        styles += """<style>
+        /* Deliberate visual hierarchy: one logo, one title and one login card. */
+        [data-testid="stMainBlockContainer"] {
+          max-width: 720px !important;
+          padding-top: clamp(1rem, 3vh, 2rem) !important;
+          padding-bottom: 2rem !important;
+          margin-inline: auto !important;
+        }
+        .nas-brand-hero { margin: 0 auto .75rem !important; text-align:center !important; }
+        .nas-brand-hero img {
+          width: min(175px, 43vw) !important;
+          max-height: 135px !important;
+          object-fit: contain !important;
+        }
+        /* The official image already contains NASAAEM HOSPITAL. */
+        .nas-brand-caption, .nas-brand-rule { display:none !important; }
+        [data-testid="stMainBlockContainer"] h1 {
+          text-align:center !important;
+          font-size: clamp(1.75rem, 3vw, 2.25rem) !important;
+          letter-spacing: -.035em !important;
+          line-height: 1.16 !important;
+          margin: .25rem 0 0 !important;
+          font-weight: 800 !important;
+        }
+        [data-testid="stMainBlockContainer"] h2,
+        [data-testid="stMainBlockContainer"] h3 {
+          text-align:center !important;
+          font-size: clamp(1.05rem, 2vw, 1.25rem) !important;
+          font-weight: 650 !important;
+          margin: .15rem 0 0 !important;
+        }
+        [data-testid="stMainBlockContainer"] [data-testid="stCaptionContainer"] {
+          text-align:center !important;
+          color:#657d92 !important;
+          font-size:.86rem !important;
+        }
+        [data-testid="stMainBlockContainer"] [data-testid="stVerticalBlock"] {
+          row-gap: .65rem;
+        }
+        [data-testid="stForm"] {
+          width: min(100%, 540px) !important;
+          max-width: 540px !important;
+          margin: .25rem auto 0 !important;
+          padding: clamp(1.15rem,2.5vw,1.8rem) !important;
+          border-radius: 22px !important;
+          border:1px solid #dbeaf5 !important;
+          background:#fff !important;
+          box-shadow:0 16px 45px rgba(21,83,132,.085) !important;
+        }
+        [data-testid="stForm"] label { color:#183b57 !important; font-weight:600 !important; }
+        [data-testid="stForm"] [data-testid="stTextInput"] input {
+          background:#f7fbff !important;
+          min-height: 45px !important;
+          color:#183b57 !important;
+        }
+        [data-testid="stFormSubmitButton"] button {
+          min-height: 48px !important;
+          border-radius: 11px !important;
+          font-weight:750 !important;
+          letter-spacing:.01em !important;
+        }
+        .stApp::before { opacity: .024 !important; background-position:center 75% !important; }
+        @media(max-width:650px) {
+          [data-testid="stMainBlockContainer"] {padding:1.35rem 1rem 2rem !important;}
+          .nas-brand-hero img {width:min(150px,48vw) !important;max-height:116px !important;}
+          [data-testid="stForm"] {padding:1.1rem !important;border-radius:17px !important;}
+          [data-testid="stMainBlockContainer"] h1 {font-size:1.8rem !important;}
+        }
+        </style>"""
     st.markdown(styles, unsafe_allow_html=True)
     if is_login:
         st.markdown(
