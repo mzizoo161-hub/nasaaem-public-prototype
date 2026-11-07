@@ -124,9 +124,4 @@ def apply_nasaaem_theme():
             unsafe_allow_html=True,
         )
     else:
-        st.markdown(
-            '<div class="nas-workspace-brand">'
-            + (f'<img src="{data_uri}" alt="Nasaaem Hospital logo">' if data_uri else '')
-            + '<span>NASAAEM HOSPITAL · HELPDESK</span></div>',
-            unsafe_allow_html=True,
-        )
+        pass
