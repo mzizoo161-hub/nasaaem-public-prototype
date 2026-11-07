@@ -76,6 +76,44 @@ def apply_nasaaem_theme():
          [data-testid='stFormSubmitButton'] button{width:100%;}
          @media(max-width:650px){h2{font-size:1.4rem!important;}}
         </style>"""
+    # NASAAEM_LOGIN_POLISH_609 — login-only enhancements, no backend changes
+    if is_login:
+        styles += r"""
+        <style>
+          [data-testid="stMainBlockContainer"] {
+            max-width: 620px !important;
+            padding-top: clamp(1.4rem, 5vh, 3rem) !important;
+            padding-bottom: 2rem !important;
+          }
+          .nas-brand-hero { margin: 0 auto .55rem !important; }
+          .nas-brand-hero img {
+            width: min(190px, 48vw) !important;
+            height: auto !important;
+            max-height: none !important;
+            object-fit: contain !important;
+          }
+          .nas-brand-caption { display: none !important; }
+          .nas-brand-rule { margin: .65rem auto .5rem !important; width: 56px !important; }
+          h1 { text-align: center !important; font-size: clamp(1.75rem, 3vw, 2.15rem) !important; margin-top: .1rem !important; }
+          h2, h3 { text-align: center !important; }
+          [data-testid="stForm"] {
+            margin: .6rem auto .15rem !important;
+            max-width: 560px !important;
+            padding: 1.35rem 1.5rem !important;
+            border-radius: 22px !important;
+            box-shadow: 0 12px 36px rgba(17,81,129,.10) !important;
+          }
+          [data-testid="stMainBlockContainer"] > div > div > div { min-width: 0; }
+          .stApp::before { opacity: .028 !important; background-position: center 66% !important; }
+          [data-testid="stCaptionContainer"] { text-align: center; }
+          @media (max-width: 650px) {
+            [data-testid="stMainBlockContainer"] { padding: 1.25rem 1rem 2rem !important; }
+            .nas-brand-hero img { width: min(155px, 45vw) !important; }
+            [data-testid="stForm"] { padding: 1.1rem !important; border-radius: 18px !important; }
+            h1 { font-size: 1.7rem !important; }
+          }
+        </style>
+        """
     st.markdown(styles, unsafe_allow_html=True)
     if is_login:
         st.markdown(

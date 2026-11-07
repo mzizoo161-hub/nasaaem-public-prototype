@@ -168,34 +168,6 @@ def get_saved_tickets(request_id):
 
 if st.session_state.main_user is None:
 
-    # NASAAEM_VISIBLE_LOGO_605
-    from pathlib import Path
-
-    hospital_logo = (
-        Path(__file__).resolve().parent
-        / "assets"
-        / "nasaaem_hospital_logo.png"
-    )
-
-    left_space, branding, right_space = st.columns([1, 2, 1])
-
-    with branding:
-        st.image(str(hospital_logo), use_container_width=True)
-
-    st.markdown(
-        """
-        <div style="text-align:center;
-                    color:#145487;
-                    font-weight:700;
-                    letter-spacing:0.08em;
-                    margin-bottom:22px;">
-            NASAAEM HOSPITAL · DIGITAL SERVICES
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
     st.title("Al Nasaaem Helpdesk")
     st.subheader("Employee Login")
 
@@ -247,10 +219,7 @@ if st.session_state.main_user is None:
             st.session_state.main_page = "Home"
             st.rerun()
 
-    st.caption(
-        "Prototype access only. Phone number and "
-        "employee ID do not securely verify identity."
-    )
+    st.caption("Demo environment · Synthetic data only")
 
     st.stop()
 
