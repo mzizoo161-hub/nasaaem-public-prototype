@@ -198,6 +198,44 @@ def apply_nasaaem_theme():
       }
     </style>
     """
+
+    # NASAAEM_FINAL_VISUAL_FIX_624
+    styles += """
+    <style>
+    /* Keep the entire original hospital logo visible */
+    .nas-brand-hero {
+        padding-top: 48px !important;
+        margin: 0 auto 8px !important;
+        overflow: visible !important;
+        position: relative !important;
+    }
+
+    .nas-brand-hero img {
+        display: block !important;
+        width: min(190px, 48vw) !important;
+        height: auto !important;
+        max-height: none !important;
+        object-fit: contain !important;
+        object-position: center !important;
+        margin: 0 auto !important;
+        overflow: visible !important;
+    }
+
+    /* Hide Streamlit's keyboard submission instructions */
+    [data-testid="InputInstructions"],
+    [data-testid="stInputInstructions"],
+    div[class*="InputInstructions"],
+    [data-testid="stTextInput"] [data-testid*="Instruction"] {
+        display: none !important;
+    }
+
+    /* Keep form fields clean and readable */
+    [data-testid="stTextInput"] input {
+        padding-right: 14px !important;
+    }
+    </style>
+    """
+
     st.markdown(styles, unsafe_allow_html=True)
     if is_login:
         st.markdown(
