@@ -275,6 +275,33 @@ def apply_nasaaem_theme():
           object-fit: contain !important;
       }
     </style>"""
+
+    # NASAAEM_REFINED_UI_632
+    styles += """
+    <style>
+    /* Remove the instruction container beside text inputs */
+    [data-testid="stForm"]
+    [data-testid="stTextInputRootElement"]
+    input[data-testid="stTextInputField"] + div {
+        display: none !important;
+    }
+
+    /* More visible, centrally positioned hospital watermark */
+    .stApp::before {
+        opacity: 0.065 !important;
+        background-position: center 54% !important;
+        background-size: min(58vw, 620px) auto !important;
+    }
+
+    @media (max-width: 650px) {
+        .stApp::before {
+            opacity: 0.05 !important;
+            background-size: 85vw auto !important;
+        }
+    }
+    </style>
+    """
+
     st.markdown(styles, unsafe_allow_html=True)
     if is_login:
         st.markdown(
