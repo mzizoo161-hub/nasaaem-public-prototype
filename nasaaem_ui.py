@@ -251,6 +251,30 @@ def apply_nasaaem_theme():
       div[data-testid="InputInstructions"] span,
       [data-testid="stInputInstructions"] { display:none !important; }
     </style>"""
+    # NASAAEM_TRANSPARENT_LOGO_AND_HINTS_628
+    styles += """<style>
+      /* Streamlit form input hint: hide text, not the actual input or its label. */
+      div[data-testid="InputInstructions"],
+      div[data-testid="InputInstructions"] > span:first-child,
+      [data-testid="stInputInstructions"],
+      [data-testid*="inputinstructions" i],
+      [class*="inputinstructions" i],
+      [class*="InputInstructions"] {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+      }
+      /* Preserve full original transparent logo, never clip it. */
+      .nas-brand-hero, .nas-brand-hero img {
+          overflow: visible !important;
+          clip-path: none !important;
+      }
+      .nas-brand-hero img {
+          height: auto !important;
+          max-height: none !important;
+          object-fit: contain !important;
+      }
+    </style>"""
     st.markdown(styles, unsafe_allow_html=True)
     if is_login:
         st.markdown(
