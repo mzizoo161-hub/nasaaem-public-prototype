@@ -120,15 +120,18 @@ def apply_nasaaem_theme():
         /* Deliberate visual hierarchy: one logo, one title and one login card. */
         [data-testid="stMainBlockContainer"] {
           max-width: 720px !important;
-          padding-top: clamp(1rem, 3vh, 2rem) !important;
+          padding-top: clamp(3rem, 7vh, 5rem) !important;
           padding-bottom: 2rem !important;
           margin-inline: auto !important;
         }
-        .nas-brand-hero { margin: 0 auto .75rem !important; text-align:center !important; }
+        .nas-brand-hero { margin: 0 auto .75rem !important; padding-top: 1rem !important; overflow: visible !important; text-align:center !important; }
         .nas-brand-hero img {
-          width: min(175px, 43vw) !important;
-          max-height: 135px !important;
+          display: block !important;
+          width: min(190px, 48vw) !important;
+          height: auto !important;
+          max-height: none !important;
           object-fit: contain !important;
+          margin: 0 auto !important;
         }
         /* The official image already contains NASAAEM HOSPITAL. */
         .nas-brand-caption, .nas-brand-rule { display:none !important; }
@@ -180,7 +183,7 @@ def apply_nasaaem_theme():
         .stApp::before { opacity: .024 !important; background-position:center 75% !important; }
         @media(max-width:650px) {
           [data-testid="stMainBlockContainer"] {padding:1.35rem 1rem 2rem !important;}
-          .nas-brand-hero img {width:min(150px,48vw) !important;max-height:116px !important;}
+          .nas-brand-hero img {width:min(150px,48vw) !important;max-height:none !important;}
           [data-testid="stForm"] {padding:1.1rem !important;border-radius:17px !important;}
           [data-testid="stMainBlockContainer"] h1 {font-size:1.8rem !important;}
         }
