@@ -20,7 +20,7 @@ RULES = [
     ("Maintenance", "Building Maintenance",
      r"باب|شباك|مقبض|كرسي مكسور|door|window"),
     ("Housekeeping", "Cleaning Issue",
-     r"نظاف[هة]|تنضيف|تنظيف|زبال[هة]|قمام[هة]|cleaning|housekeeping"),
+     r"نظاف[هة]|تنضيف|تنظيف|ينضف|يتنضف|ننضف|تنضف|نضف|نضّف|زبال[هة]|قمام[هة]|cleaning|housekeeping"),
     ("Warehouse", "Stock Issue",
      r"المخزن|المخازن|صرف مستلزمات|المخزون|stock|warehouse"),
     ("Purchasing", "Purchasing Request",
