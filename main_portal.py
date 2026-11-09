@@ -500,6 +500,30 @@ st.divider()
 # 8. AI CHAT
 # =====================================================
 
+@st.fragment(run_every="10s")
+def live_ticket_messages(ticket_id, staff_view=False):
+    """Refresh conversation messages without refreshing reply forms."""
+    try:
+        messages = backend["get_ticket_messages"](ticket_id)
+        feedback = backend["get_ticket_feedback"](ticket_id)
+    except (ValueError, PermissionError, sqlite3.Error, psycopg.Error):
+        st.warning("Could not load ticket conversation.")
+        return
+
+    for entry in messages:
+        st.caption(f"{entry['author']} · {entry['created_at']}")
+        st.write(entry["body"])
+
+    if feedback:
+        if staff_view:
+            if feedback.get("rating"):
+                st.caption(f"Feedback rating: {feedback['rating']}/5")
+            if feedback.get("comment"):
+                st.write(feedback["comment"])
+        elif feedback.get("rating"):
+            st.caption(f"Requester feedback: {feedback['rating']}/5")
+
+
 if st.session_state.main_page == "Chat":
 
     with st.form("ai_request_form", enter_to_submit=False):
@@ -746,18 +770,8 @@ elif st.session_state.main_page == "My Tickets":
 
                 # Two-way ticket conversation (readable by requester and assigned staff).
                 st.markdown("#### Ticket conversation")
-                try:
-                    messages = backend["get_ticket_messages"](ticket["id"])
-                    existing_feedback = backend["get_ticket_feedback"](ticket["id"])
-                except (ValueError, PermissionError, psycopg.Error):
-                    messages = []
-                    existing_feedback = None
-                    st.warning("Could not load ticket conversation.")
-                for entry in messages:
-                    st.caption(f"{entry['author']} · {entry['created_at']}")
-                    st.write(entry['body'])
-                if existing_feedback and existing_feedback['rating']:
-                    st.caption(f"Requester feedback: {existing_feedback['rating']}/5")
+                live_ticket_messages(ticket["id"])
+
                 if ticket["status"] != "Resolved":
                     with st.form(f"reply_form_{ticket['id']}", clear_on_submit=True, enter_to_submit=False):
                         reply = st.text_area("Reply / add details", max_chars=2000)
@@ -992,17 +1006,8 @@ elif st.session_state.main_page == "Dashboard":
 
                     # Two-way ticket conversation for staff/admin.
                     st.markdown("**Conversation**")
-                    try:
-                        for entry in backend['get_ticket_messages'](ticket['id']):
-                            st.caption(f"{entry['author']} · {entry['created_at']}")
-                            st.write(entry['body'])
-                        requester_feedback = backend['get_ticket_feedback'](ticket['id'])
-                        if requester_feedback:
-                            st.caption(f"Feedback rating: {requester_feedback['rating'] or '—'}/5")
-                            if requester_feedback['comment']:
-                                st.write(requester_feedback['comment'])
-                    except (ValueError, PermissionError, psycopg.Error):
-                        st.warning("Conversation not available")
+                    live_ticket_messages(ticket["id"], staff_view=True)
+
                     if ticket['status'] != 'Resolved':
                         with st.form(f"staff_reply_{ticket['id']}", clear_on_submit=True, enter_to_submit=False):
                             reply = st.text_area("Reply to requester", max_chars=2000)
