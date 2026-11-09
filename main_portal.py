@@ -298,6 +298,7 @@ with header:
 
 
 with notification_column:
+    st.markdown("<div style='height: 48px'></div>", unsafe_allow_html=True)
 
     try:
 
@@ -397,6 +398,7 @@ with notification_column:
 
 
 with logout_column:
+    st.markdown("<div style='height: 48px'></div>", unsafe_allow_html=True)
 
     st.button(
         "Logout",
@@ -424,7 +426,7 @@ if st.session_state.main_page == "Home":
 
     with col1:
 
-        with st.container(border=True):
+        with st.container(border=True, height=340, vertical_alignment="distribute"):
 
             st.subheader("AI Chat")
 
@@ -443,7 +445,7 @@ if st.session_state.main_page == "Home":
 
     with col2:
 
-        with st.container(border=True):
+        with st.container(border=True, height=340, vertical_alignment="distribute"):
 
             st.subheader("My Tickets")
 
@@ -462,7 +464,7 @@ if st.session_state.main_page == "Home":
 
     with col3:
 
-        with st.container(border=True):
+        with st.container(border=True, height=340, vertical_alignment="distribute"):
 
             st.subheader(
                 "Department Dashboard"
