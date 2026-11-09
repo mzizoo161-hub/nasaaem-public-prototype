@@ -280,6 +280,16 @@ def cached_unread_count(user_id):
 def cached_notifications(user_id):
     return backend["get_user_notifications"](user_id)
 
+# NASAAEM_WORKSPACE_V1 — presentation and navigation only
+from nasaaem_workspace_ui import (
+    apply_workspace_theme,
+    render_workspace_navigation,
+    render_workspace_intro,
+)
+apply_workspace_theme()
+render_workspace_navigation(user, is_admin, can_use_dashboard, navigate)
+render_workspace_intro(st.session_state.main_page, user)
+
 # =====================================================
 # 5. HEADER + NOTIFICATIONS
 # =====================================================
