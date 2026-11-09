@@ -416,70 +416,56 @@ st.divider()
 
 if st.session_state.main_page == "Home":
 
-    st.subheader(
-        "What would you like to do?"
-    )
+    st.subheader("What would you like to do?")
 
-    col1, col2, col3 = st.columns(3)
+    # Show management navigation only to authorized users.
+    if can_use_dashboard:
+        home_columns = st.columns(3, gap="large")
+    else:
+        home_columns = st.columns(2, gap="large")
 
-    # AI CHAT
-
-    with col1:
-
-        with st.container(border=True, height=340, vertical_alignment="distribute"):
-
+    with home_columns[0]:
+        with st.container(
+            border=True,
+            height=340,
+            vertical_alignment="distribute",
+        ):
             st.subheader("AI Chat")
-
-            st.write(
-                "Submit a new support request."
-            )
+            st.write("Submit a new support request.")
 
             if st.button(
                 "Open AI Chat",
                 use_container_width=True,
             ):
-
                 navigate("Chat")
 
-    # MY TICKETS
-
-    with col2:
-
-        with st.container(border=True, height=340, vertical_alignment="distribute"):
-
+    with home_columns[1]:
+        with st.container(
+            border=True,
+            height=340,
+            vertical_alignment="distribute",
+        ):
             st.subheader("My Tickets")
-
-            st.write(
-                "Track and confirm your requests."
-            )
+            st.write("Track and confirm your requests.")
 
             if st.button(
                 "Open My Tickets",
                 use_container_width=True,
             ):
-
                 navigate("My Tickets")
 
-    # DEPARTMENT DASHBOARD
-
-    with col3:
-
-        with st.container(border=True, height=340, vertical_alignment="distribute"):
-
-            st.subheader(
-                "Department Dashboard"
-            )
-
-            if can_use_dashboard:
+    if can_use_dashboard:
+        with home_columns[2]:
+            with st.container(
+                border=True,
+                height=340,
+                vertical_alignment="distribute",
+            ):
+                st.subheader("Department Dashboard")
 
                 if is_admin:
-
-                    st.write(
-                        "Manage tickets from all departments."
-                    )
-
+                    st.write("Manage tickets from all departments.")
                 else:
-
                     st.write(
                         f"Manage {user['department']} tickets."
                     )
@@ -488,19 +474,16 @@ if st.session_state.main_page == "Home":
                     "Open Dashboard",
                     use_container_width=True,
                 ):
-
                     navigate("Dashboard")
 
-            else:
+    if is_admin:
+        if st.button(
+            "Open Admin Overview",
+            use_container_width=True,
+        ):
+            navigate("Admin")
 
-                st.info(
-                    "No department assigned to your account."
-                )
-
-    if is_admin and st.button("Open Admin Overview", use_container_width=True):
-        navigate("Admin")
     st.stop()
-
 
 # =====================================================
 # 7. BACK NAVIGATION
