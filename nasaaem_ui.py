@@ -302,7 +302,7 @@ def apply_nasaaem_theme():
     </style>
     """
 
-    st.markdown(styles, unsafe_allow_html=True)
+    st.html(styles)
     if is_login:
         st.markdown(
             '<div class="nas-brand-hero">'
