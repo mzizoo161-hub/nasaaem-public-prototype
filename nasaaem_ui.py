@@ -302,20 +302,20 @@ def apply_nasaaem_theme():
     </style>
     """
 
-    # NASAAEM_CLEAN_STYLESHEET_645
+    # NASAAEM_STYLESHEET_REPAIR_647
     import re
 
     css_blocks = re.findall(
-        r"<style\\b[^>]*>(.*?)</style\\s*>",
+        r"(?is)<style[^>]*>(.*?)</style\s*>",
         styles,
-        flags=re.IGNORECASE | re.DOTALL,
     )
 
     if not css_blocks:
-        raise RuntimeError("Hospital stylesheet missing.")
+        raise RuntimeError("No hospital CSS blocks found.")
 
-    clean_styles = "<style>\\n" + "\\n".join(css_blocks) + "\\n</style>"
+    clean_styles = "<style>\n" + "\n".join(css_blocks) + "\n</style>"
     st.html(clean_styles)
+
     if is_login:
         st.markdown(
             '<div class="nas-brand-hero">'
