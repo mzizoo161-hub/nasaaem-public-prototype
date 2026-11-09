@@ -44,6 +44,22 @@ def issue(message, category, department=None, decision="ROUTE", question=None):
     )
     if match:
         location = match.group(1).strip()
+
+    # Prefer detailed locations before generic room names.
+    location_patterns = [
+        r"(?:مكتب|المكتب) +(?:الإدارة|الادارة|العيادات|المدير|الاستقبال|الحسابات)",
+        r"(?:حمام|الحمام) +الدور +(الأول|الاول|التاني|الثاني|الثالث|[0-9]+)",
+        r"(?:غرفة|الغرفة) +(العمليات|المرضى|[0-9]+)",
+        r"الدور +(الأول|الاول|التاني|الثاني|الثالث|[0-9]+)",
+        r"المكتب|مكتب|الحمام|حمام|الغرفة|غرفة|الريسبشن|الاستقبال",
+    ]
+
+    for pattern in location_patterns:
+        place = re.search(pattern, message, re.IGNORECASE)
+        if place:
+            location = place.group(0).strip()
+            break
+
     return SimpleNamespace(
         description=message,
         category=category,
